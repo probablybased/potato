@@ -67,10 +67,10 @@ app.use(async(ctx: Context, next) => {
 });
 
 app.use(router.routes());
-app.use(html.getNotFound)
+app.use(html.getNotFound);
 
 for await (const entry of Deno.readDirSync('./static/media/')) {
-    serve.gifs.push(entry.name)
+    serve.gifs.push(entry.name);
 }
 
 await app.listen({ hostname: "0.0.0.0", port: 8000 });

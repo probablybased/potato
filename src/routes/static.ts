@@ -8,7 +8,7 @@ export class staticContent {
     
     getNotFound(ctx: Context) {
         ctx.response.headers.set('Content-Type', 'text/plain');
-        ctx.response.body = "404 Not Found"
+        ctx.response.body = "404 Not Found";
     }
 }
 

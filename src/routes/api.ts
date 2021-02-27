@@ -19,6 +19,6 @@ export class api {
     
     getTudouAmount(ctx: Context) {
         ctx.response.headers.set('Content-Type', 'text/plain');
-        ctx.response.body = this.gifs.length
+        ctx.response.body = this.gifs.length;
     }
 }
