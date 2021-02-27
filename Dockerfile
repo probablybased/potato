@@ -8,6 +8,8 @@ USER deno
 
 ADD . .
 
+RUN deno cache src/deps.ts
+
 RUN deno cache src/site.ts
 
 CMD ["run", "--allow-net", "--allow-read", "src/site.ts"]
