@@ -1,4 +1,4 @@
-# potato -  fetch images of 土豆 easily
+# potato 
 
 ### easily fetch images of 土豆 (Tudou)
 ![](https://i.imgur.com/NP432U4.png)
