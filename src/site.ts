@@ -4,21 +4,23 @@ import {
     green,
     bold,
   } from "https://deno.land/std/fmt/colors.ts";
-import { getIndex, getNotFound } from "./routes/static.ts"
-import { gifs, getTudou, getTudouById, getTudouAmount } from "./routes/api.ts"
+import { staticContent } from "./routes/static.ts"
+import { api } from "./routes/api.ts"
 
 const app = new Application();
 const router = new Router();
+const html = new staticContent();
+const serve = new api();
 
 router
     .get("/", (ctx) => {
-        getIndex(ctx);
+        html.getIndex(ctx);
     })
     .get("/api/tudou", (ctx) =>  {
-        getTudou(ctx);
+        serve.getTudou(ctx);
     })
     .get("/api/tudou/count", (ctx) => {
-        getTudouAmount(ctx);
+        serve.getTudouAmount(ctx);
     });
 
 app.addEventListener("listen", ({ hostname, port}) => {
@@ -62,10 +64,10 @@ app.use(async (ctx, next) => {
 });
 
 app.use(router.routes());
-app.use(getNotFound)
+app.use(html.getNotFound)
 
 for await (const entry of Deno.readDirSync('./static/media/')) {
-    gifs.push(entry.name)
+    serve.gifs.push(entry.name)
 }
 
 await app.listen({ hostname: "0.0.0.0", port: 8000 });
