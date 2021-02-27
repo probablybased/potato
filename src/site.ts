@@ -1,11 +1,14 @@
-import { Application, Router, isHttpError, Status } from "https://deno.land/x/oak/mod.ts";
-import {
-    red,
-    green,
-    bold,
-  } from "https://deno.land/std/fmt/colors.ts";
 import { staticContent } from "./routes/static.ts"
 import { api } from "./routes/api.ts"
+import { 
+  Application,
+  Router,
+  Context,
+  isHttpError,
+  red,
+  bold, 
+  green
+} from "./deps.ts" 
 
 const app = new Application();
 const router = new Router();
@@ -13,13 +16,13 @@ const html = new staticContent();
 const serve = new api();
 
 router
-    .get("/", (ctx) => {
+    .get("/", (ctx: Context) => {
         html.getIndex(ctx);
     })
-    .get("/api/tudou", (ctx) =>  {
+    .get("/api/tudou", (ctx: Context) =>  {
         serve.getTudou(ctx);
     })
-    .get("/api/tudou/count", (ctx) => {
+    .get("/api/tudou/count", (ctx: Context) => {
         serve.getTudouAmount(ctx);
     });
 
@@ -35,19 +38,19 @@ app.addEventListener("listen", ({ hostname, port}) => {
     console.log(`Listening on ${hostname}:${port}`)
 })
 
-app.use(async (context, next) => {
+app.use(async(ctx: Context, next) => {
     try {
       await next();
     } catch (err) {
       if (isHttpError(err)) {
-        context.response.status = err.status;
+        ctx.response.status = err.status;
         const { message, status, stack } = err;
-        if (context.request.accepts("json")) {
-          context.response.body = { message, status, stack };
-          context.response.type = "json";
+        if (ctx.request.accepts("json")) {
+          ctx.response.body = { message, status, stack };
+          ctx.response.type = "json";
         } else {
-          context.response.body = `${status} ${message}\n\n${stack ?? ""}`;
-          context.response.type = "text/plain";
+          ctx.response.body = `${status} ${message}\n\n${stack ?? ""}`;
+          ctx.response.type = "text/plain";
         }
       } else {
         console.log(err);
@@ -56,7 +59,7 @@ app.use(async (context, next) => {
     }
 });
 
-app.use(async (ctx, next) => {
+app.use(async(ctx: Context, next) => {
     const start = Date.now();
     await next();
     const rt = Date.now() - start;
