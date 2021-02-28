@@ -1,4 +1,3 @@
-import { staticContent } from "./routes/static.ts";
 import { api } from "./routes/api.ts";
 import {
   Application,
@@ -12,7 +11,6 @@ import {
 
 const app = new Application();
 const router = new Router();
-const html = new staticContent();
 const serve = new api();
 
 router
