@@ -17,7 +17,8 @@ const serve = new api();
 
 router
   .get("/", (ctx: Context) => {
-    html.getIndex(ctx);
+    const page = Deno.readFileSync("./static/html/index.html");
+    ctx.response.body = page;
   })
   .get("/api/tudou", (ctx: Context) => {
     serve.getTudou(ctx);
@@ -67,7 +68,10 @@ app.use(async (ctx: Context, next) => {
 });
 
 app.use(router.routes());
-app.use(html.getNotFound);
+app.use((ctx: Context) => {
+  ctx.response.headers.set("Content-Type", "text/plain");
+  ctx.response.body = "404 Not Found";
+});
 
 for await (const entry of Deno.readDirSync("./static/media/")) {
   serve.gifs.push(entry.name);
