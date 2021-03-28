@@ -2,6 +2,7 @@ use actix_files::NamedFile;
 use actix_web::{web, App, HttpServer, Responder, HttpRequest};
 use std::path::PathBuf;
 use rand::seq::SliceRandom;
+use actix_web::http::header::{ContentDisposition, DispositionType, DispositionParam};
 
 async fn get_gif() -> PathBuf {
     let gifs = std::fs::read_dir("./media").unwrap()
@@ -17,7 +18,13 @@ async fn serve_index(_req: HttpRequest) -> impl Responder {
 }
 
 async fn serve_tudou(_req: HttpRequest) -> Result<NamedFile, std::io::Error> {
-    Ok(NamedFile::open(get_gif().await)?)
+    let file = NamedFile::open(get_gif().await)?
+        .set_content_type(mime::IMAGE_GIF)
+        .set_content_disposition(ContentDisposition {
+            disposition: DispositionType::Inline,
+            parameters: vec![DispositionParam::Filename("cat.gif".parse().unwrap())],
+        });
+    Ok(file)
 }
 
 #[actix_web::main]
